@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #define XWScreenWidth [[UIScreen mainScreen] bounds].size.width
 
 typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedControl的模式
@@ -15,13 +14,19 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedContr
     XWPageVCSegmentShowTypeNavigationView  // Navigation.view上
 };
 
+@class XWPageViewController;
+@protocol XWPageViewControllerDelegate <NSObject>
+@required
+- (void)xwPageViewController:(XWPageViewController *)xwPageViewController showFrame:(CGRect)frame;
+
+@end
 @interface XWPageViewController : UIViewController
 
 /**
  当前页面的显示情况
  */
 @property (nonatomic, assign, readonly) NSInteger currentIndex;
-@property (nonatomic, strong, readonly) UIViewController *currentViewController;
+@property (nonatomic, strong, readonly) UIViewController <XWPageViewControllerDelegate>*currentViewController;
 
 /**
  UISegmentedControl显示类型与样式
@@ -46,7 +51,7 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedContr
 
 
 
-- (instancetype)initWithViewControllers:(NSArray *)viewControllers
+- (instancetype)initWithViewControllers:(NSArray <XWPageViewControllerDelegate>*)viewControllers
                                  titles:(NSArray *)titles
                     isShowPageIndicator:(BOOL)isShowPageIndicator
                         segmentShowType:(XWPageVCSegmentShowType)showType

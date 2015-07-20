@@ -6,18 +6,18 @@
 //  Copyright (c) 2015年 Zhang Xiaowei. All rights reserved.
 //
 #import "XWPageViewController.h"
-
 @interface XWPageViewController()<UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 @property (nonatomic, strong) UISegmentedControl *segment; // 分段控制器
 @property (nonatomic, strong) NSArray *titles;  // UISegment的Title数组
-@property (nonatomic, strong) NSArray *viewControllers; // 视图控制器数组
+@property (nonatomic, strong) NSArray <XWPageViewControllerDelegate>*viewControllers; // 视图控制器数组
 
 @property (nonatomic, strong) UIPageViewController *pageViewController;
-@property (nonatomic, strong) UIViewController *nextViewController; // 应显示的下一个试图控制
+@property (nonatomic, strong) UIViewController <XWPageViewControllerDelegate>*nextViewController; // 应显示的下一个试图控制
 @property (nonatomic, assign) NSInteger nextPage; // 应该显示的下一页索引
 @property (nonatomic, strong) UIView *segmentDefaultView; // UISegmentedControl的默认载体
 @property (nonatomic, assign) NSInteger segmentDefaultIndex; // 默认索引，即默认显示第几个页面，当前页面及其索引都会随之改变
 
+@property (nonatomic, assign) BOOL naviAnpi;
 @end
 
 @implementation XWPageViewController
@@ -36,7 +36,7 @@
     return self;
 }
 
-- (instancetype)initWithViewControllers:(NSArray *)viewControllers
+- (instancetype)initWithViewControllers:(NSArray <XWPageViewControllerDelegate>*)viewControllers
                                  titles:(NSArray *)titles
                     isShowPageIndicator:(BOOL)isShowPageIndicator
                         segmentShowType:(XWPageVCSegmentShowType)showType
@@ -169,7 +169,6 @@
                 [self.segmentDefaultView addSubview:self.segment];
                 [self.navigationController.view addSubview:self.segmentDefaultView];
             }
-            
         }
             break;
             
@@ -255,11 +254,23 @@
                                              NSLog(@"Finished:NO");
                                          }
         }];
-        _pageViewController.view.frame = self.view.bounds;
+        CGRect frame = self.view.bounds;
+        CGFloat y = 0;
+        BOOL isAlpha = self.navigationController.navigationBar.translucent;
+        if (self.segmentShowType == XWPageVCSegmentShowTypeNavigationView) {
+            if (self.segmentView) {
+                y = 20 + ((!isAlpha) ? 44 : 0);
+            }
+        }
+        _pageViewController.view.frame = CGRectMake(0, y, CGRectGetWidth(frame), CGRectGetHeight(frame));
         
         _pageViewController.delegate = self;
         _pageViewController.dataSource = self;
         [self.view addSubview:_pageViewController.view];
+        
+        for (UIViewController <XWPageViewControllerDelegate>*controller in self.viewControllers) {
+            [controller xwPageViewController:self showFrame:frame];
+        }
     }
     return _pageViewController;
 }
