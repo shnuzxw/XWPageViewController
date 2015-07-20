@@ -31,15 +31,15 @@
     XWPageViewController *pageVC = [[XWPageViewController alloc] initWithViewControllers:viewControllers
                                                                                   titles:titles
                                                                      isShowPageIndicator:NO
-                                                                         segmentShowType:XWPageVCSegmentShowTypeTitleView
-                                                                                 toIndex:1];
+                                                                         segmentShowType:XWPageVCSegmentShowTypeNavigationView
+                                                                                 toIndex:0];
     pageVC.title = @"张校玮";
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 64, XWScreenWidth, 44)];
     view.backgroundColor = [UIColor yellowColor];
     pageVC.segmentCenter = CGPointMake(view.bounds.size.width / 2.0, view.bounds.size.height / 2.0);
     pageVC.segmentView = view;
     pageVC.segmentTintColor = [UIColor redColor];
-    [pageVC setWidth:200 forSegmentAtIndex:1];
+    [pageVC setWidth:200 forSegmentAtIndex:0];
     
     UINavigationController * navi = [[UINavigationController alloc] initWithRootViewController:pageVC];
     self.window.rootViewController = navi;
