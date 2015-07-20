@@ -256,20 +256,25 @@
         }];
         CGRect frame = self.view.bounds;
         CGFloat y = 0;
-        BOOL isAlpha = self.navigationController.navigationBar.translucent;
+        CGFloat h = CGRectGetHeight(frame) - y;
+        CGFloat naviHeight = 20;
+        naviHeight = 20 + ((self.navigationController) ? 44 : 0);
         if (self.segmentShowType == XWPageVCSegmentShowTypeNavigationView) {
-            if (self.segmentView) {
-                y = 20 + ((!isAlpha) ? 44 : 0);
-            }
+            y = naviHeight + ((self.segmentView != nil) ? CGRectGetHeight(self.segmentView.frame) : 44);
+            
+        }else{
+            y = naviHeight;
         }
-        _pageViewController.view.frame = CGRectMake(0, y, CGRectGetWidth(frame), CGRectGetHeight(frame));
+        h = h - y;
+        _pageViewController.view.frame = CGRectMake(0, y, CGRectGetWidth(frame), h);
+        NSLog(@"%@",_pageViewController.view);
         
         _pageViewController.delegate = self;
         _pageViewController.dataSource = self;
         [self.view addSubview:_pageViewController.view];
         
         for (UIViewController <XWPageViewControllerDelegate>*controller in self.viewControllers) {
-            [controller xwPageViewController:self showFrame:frame];
+            [controller xwPageViewController:self showFrame:_pageViewController.view.frame];
         }
     }
     return _pageViewController;
