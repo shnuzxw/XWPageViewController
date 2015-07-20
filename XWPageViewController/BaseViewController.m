@@ -19,7 +19,7 @@
 }
 
 - (void)xwPageViewController:(XWPageViewController *)xwPageViewController showFrame:(CGRect)frame{
-    self.tableView.frame = frame;
+    self.tableView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
 }
 
 #pragma mark - UITableView Datasource
