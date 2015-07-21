@@ -1,0 +1,3 @@
+# XWPageViewController
+分页视图控制器，类似AppStore分类的导航栏效果。多种自定义效果。
+传入的视图控制器需要实现XWPageViewControllerDelegate，以便于XWPageViewController在显示ViewController时对其Frame进行动态设置，以保证页面UI正常显示，不超过可见范围。
