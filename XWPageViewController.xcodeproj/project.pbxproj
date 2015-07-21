@@ -17,6 +17,7 @@
 		767D29041B538C1700276B22 /* ThirdViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D28FF1B538C1700276B22 /* ThirdViewController.m */; };
 		767D29091B538C3C00276B22 /* XWPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 767D29081B538C3C00276B22 /* XWPageViewController.m */; };
 		76B720C71B5D3D4F00F6758D /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76B720C61B5D3D4F00F6758D /* BaseViewController.m */; };
+		76BA5C371B5E913000BA2E1D /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BA5C361B5E913000BA2E1D /* RootViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,8 @@
 		767D29081B538C3C00276B22 /* XWPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XWPageViewController.m; sourceTree = "<group>"; };
 		76B720C51B5D3D4F00F6758D /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
 		76B720C61B5D3D4F00F6758D /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		76BA5C351B5E913000BA2E1D /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		76BA5C361B5E913000BA2E1D /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +105,8 @@
 				76B720C61B5D3D4F00F6758D /* BaseViewController.m */,
 				767D28DE1B538BF000276B22 /* AppDelegate.h */,
 				767D28DF1B538BF000276B22 /* AppDelegate.m */,
+				76BA5C351B5E913000BA2E1D /* RootViewController.h */,
+				76BA5C361B5E913000BA2E1D /* RootViewController.m */,
 				767D28E11B538BF000276B22 /* Images.xcassets */,
 				767D28E31B538BF000276B22 /* LaunchScreen.xib */,
 				767D28DA1B538BF000276B22 /* Supporting Files */,
@@ -245,6 +250,7 @@
 			files = (
 				767D29031B538C1700276B22 /* SecondViewController.m in Sources */,
 				767D29041B538C1700276B22 /* ThirdViewController.m in Sources */,
+				76BA5C371B5E913000BA2E1D /* RootViewController.m in Sources */,
 				767D29091B538C3C00276B22 /* XWPageViewController.m in Sources */,
 				767D28E01B538BF000276B22 /* AppDelegate.m in Sources */,
 				767D29021B538C1700276B22 /* FirstViewController.m in Sources */,

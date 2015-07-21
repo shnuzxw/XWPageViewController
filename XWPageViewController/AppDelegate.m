@@ -7,10 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "XWPageViewController.h"
-#import "FirstViewController.h"
-#import "SecondViewController.h"
-#import "ThirdViewController.h"
+#import "RootViewController.h"
 
 @interface AppDelegate ()
 
@@ -23,25 +20,9 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    FirstViewController *fVC = [[FirstViewController alloc] init];
-    SecondViewController *sVC = [[SecondViewController alloc] init];
-    ThirdViewController *tVC = [[ThirdViewController alloc] init];
-    NSArray *viewControllers = @[fVC,sVC,tVC]; // 视图控制器数组
-    NSArray *titles = @[@"第一段",@"第二段",@"第三段"]; // 标题数组
-    XWPageViewController *pageVC = [[XWPageViewController alloc] initWithViewControllers:viewControllers
-                                                                                  titles:titles
-                                                                     isShowPageIndicator:NO
-                                                                         segmentShowType:XWPageVCSegmentShowTypeNavigationView
-                                                                                 toIndex:0];
-    pageVC.title = @"张校玮"; // title标题
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 64, XWScreenWidth, 44)]; // segment的父视图
-    view.backgroundColor = [UIColor yellowColor]; // 背景
-    pageVC.segmentCenter = CGPointMake(view.bounds.size.width / 2.0, view.bounds.size.height / 2.0); // 中心点坐标
-    pageVC.segmentView = view; // 指定segment的父视图
-    pageVC.segmentTintColor = [UIColor redColor]; // 设置segment的tintColor
-    [pageVC setWidth:200 forSegmentAtIndex:0]; // 设置segment的宽度
     
-    UINavigationController * navi = [[UINavigationController alloc] initWithRootViewController:pageVC];
+    
+    UINavigationController * navi = [[UINavigationController alloc] initWithRootViewController:[[RootViewController alloc] init]];
     self.window.rootViewController = navi;
     
     self.window.backgroundColor = [UIColor whiteColor];
