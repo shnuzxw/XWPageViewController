@@ -9,15 +9,17 @@
 @interface XWPageViewController()<UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 @property (nonatomic, strong) UISegmentedControl *segment; // 分段控制器
 @property (nonatomic, strong) NSArray *titles;  // UISegment的Title数组
-@property (nonatomic, strong) NSArray <XWPageViewControllerDelegate>*viewControllers; // 视图控制器数组
+@property (nonatomic, strong) NSArray *viewControllers; // 视图控制器数组
 
 @property (nonatomic, strong) UIPageViewController *pageViewController;
-@property (nonatomic, strong) UIViewController <XWPageViewControllerDelegate>*nextViewController; // 应显示的下一个试图控制
+@property (nonatomic, strong) UIViewController *nextViewController; // 应显示的下一个试图控制
 @property (nonatomic, assign) NSInteger nextPage; // 应该显示的下一页索引
 @property (nonatomic, strong) UIView *segmentDefaultView; // UISegmentedControl的默认载体
 @property (nonatomic, assign) NSInteger segmentDefaultIndex; // 默认索引，即默认显示第几个页面，当前页面及其索引都会随之改变
 
-@property (nonatomic, assign) BOOL naviAnpi;
+@property (nonatomic, strong) UIView *priTitleView; // 原始的TitleView
+@property (nonatomic, assign) BOOL priTranslucent; // 原始的NavigationBar的透明度
+
 @end
 
 @implementation XWPageViewController
@@ -36,7 +38,7 @@
     return self;
 }
 
-- (instancetype)initWithViewControllers:(NSArray <XWPageViewControllerDelegate>*)viewControllers
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers
                                  titles:(NSArray *)titles
                     isShowPageIndicator:(BOOL)isShowPageIndicator
                         segmentShowType:(XWPageVCSegmentShowType)showType
@@ -55,11 +57,24 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor redColor];
+    self.view.backgroundColor = _viwewBackGroundColor ? _viwewBackGroundColor : [UIColor whiteColor];
     [self pageViewController];
-    
-    [self configUISegmentedControl];
 }
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.priTitleView = self.navigationItem.titleView;
+    self.priTranslucent = self.navigationController.navigationBar.translucent;
+    [self configUISegmentedControlWishShow:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self configUISegmentedControlWishShow:NO];
+    self.navigationItem.titleView = self.priTitleView;
+    self.navigationController.navigationBar.translucent = self.priTranslucent;
+}
+
 //系统协议
 #pragma mark - System Delegate
 #pragma mark -
@@ -151,23 +166,37 @@
     [self.navigationController.view addSubview:self.segment];
 }
 
-- (void)configUISegmentedControl{
+- (void)configUISegmentedControlWishShow:(BOOL)isShow{
     switch (_segmentShowType) {
         case XWPageVCSegmentShowTypeTitleView:
         {
             self.segment.center = self.navigationItem.titleView.center;
-            self.navigationItem.titleView = self.segment;
+            if (isShow) {
+                self.navigationItem.titleView = self.segment;
+            }else{
+                self.navigationItem.titleView = _priTitleView;
+            }
         }
             break;
         case XWPageVCSegmentShowTypeNavigationView:
         {
-            self.segment.center = _segmentCenter;
+            self.segment.center = self.segmentCenter;
             if (_segmentView) {
-                [_segmentView addSubview:self.segment];
-                [self.navigationController.view addSubview:_segmentView];
+                if (isShow) {
+                    [_segmentView addSubview:self.segment];
+                    [self.navigationController.view addSubview:_segmentView];
+                }else{
+                    [self.segment removeFromSuperview];
+                    [_segmentView removeFromSuperview];
+                }
             }else{
-                [self.segmentDefaultView addSubview:self.segment];
-                [self.navigationController.view addSubview:self.segmentDefaultView];
+                if (isShow) {
+                    [self.segmentDefaultView addSubview:self.segment];
+                    [self.navigationController.view addSubview:self.segmentDefaultView];
+                }else{
+                    [self.segment removeFromSuperview];
+                    [self.segmentDefaultView removeFromSuperview];
+                }
             }
         }
             break;
@@ -254,27 +283,25 @@
                                              NSLog(@"Finished:NO");
                                          }
         }];
-        CGRect frame = self.view.bounds;
-        CGFloat y = 0;
-        CGFloat h = CGRectGetHeight(frame) - y;
-        CGFloat naviHeight = 20;
-        naviHeight = 20 + ((self.navigationController) ? 44 : 0);
-        if (self.segmentShowType == XWPageVCSegmentShowTypeNavigationView) {
-            y = naviHeight + ((self.segmentView != nil) ? CGRectGetHeight(self.segmentView.frame) : 44);
-            
-        }else{
-            y = naviHeight;
-        }
-        h = h - y;
-        _pageViewController.view.frame = CGRectMake(0, y, CGRectGetWidth(frame), h);
-        NSLog(@"%@",_pageViewController.view);
-        
+        _pageViewController.view.frame = self.view.frame;
         _pageViewController.delegate = self;
         _pageViewController.dataSource = self;
         [self.view addSubview:_pageViewController.view];
         
+        CGFloat moveY = 0.0;
+        if (self.segmentShowType == XWPageVCSegmentShowTypeNavigationView) {
+            if (self.segmentView != nil) {
+                moveY = CGRectGetHeight(self.segmentView.frame);
+            }else{
+                moveY = CGRectGetHeight(self.segmentDefaultView.frame);
+            }
+        }
+        
+        CGRect frame = _pageViewController.view.frame;
+        _pageViewController.view.frame = CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame) + moveY, CGRectGetWidth(frame), CGRectGetHeight(frame) - moveY);
+        
         for (UIViewController <XWPageViewControllerDelegate>*controller in self.viewControllers) {
-            [controller xwPageViewController:self showFrame:_pageViewController.view.frame];
+            [controller xwPageViewController:self showFrame:_pageViewController.view.bounds];
         }
     }
     return _pageViewController;
@@ -282,7 +309,11 @@
                                
 - (UIView *)segmentDefaultView{
     if (!_segmentDefaultView) {
-        _segmentDefaultView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, XWScreenWidth, 44.0)];
+        CGFloat y = 0;
+        if (self.navigationController && self.navigationController.navigationBar.translucent == NO) {
+            y = 64.0;
+        }
+        _segmentDefaultView = [[UIView alloc] initWithFrame:CGRectMake(0, y, XWScreenWidth, 44.0)];
         UIColor *color = _segmentDefaultViewBackGroundColor ? _segmentDefaultViewBackGroundColor : [UIColor whiteColor];
         _segmentDefaultView.backgroundColor = color;
     }

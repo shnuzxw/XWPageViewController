@@ -26,7 +26,7 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedContr
  当前页面的显示情况
  */
 @property (nonatomic, assign, readonly) NSInteger currentIndex;
-@property (nonatomic, strong, readonly) UIViewController <XWPageViewControllerDelegate>*currentViewController;
+@property (nonatomic, strong, readonly) UIViewController *currentViewController;
 
 /**
  UISegmentedControl显示类型与样式
@@ -40,7 +40,7 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedContr
 /**
  UISegmentedControl的载体与样式
  1. segmentShowType=XWPageVCSegmentShowTypeNavigationView时有效
- 2. 可为空，为空时默认一个View(ScreenWidth,40)
+ 2. 可为空，为空时默认一个View(ScreenWidth,44)
  3. 载体的背景色可以自定义，默认白色
  */
 @property (nonatomic, strong) UIView *segmentView;
@@ -49,9 +49,9 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedContr
 
 @property (nonatomic, assign) BOOL isShowPageIndicator; // 是否显示页面指示器，默认NO
 
+@property (nonatomic, strong) UIColor *viwewBackGroundColor; // 默认白色
 
-
-- (instancetype)initWithViewControllers:(NSArray <XWPageViewControllerDelegate>*)viewControllers
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers
                                  titles:(NSArray *)titles
                     isShowPageIndicator:(BOOL)isShowPageIndicator
                         segmentShowType:(XWPageVCSegmentShowType)showType
