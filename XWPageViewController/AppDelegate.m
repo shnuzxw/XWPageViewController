@@ -26,20 +26,20 @@
     FirstViewController *fVC = [[FirstViewController alloc] init];
     SecondViewController *sVC = [[SecondViewController alloc] init];
     ThirdViewController *tVC = [[ThirdViewController alloc] init];
-    NSArray *viewControllers = @[fVC,sVC,tVC];
-    NSArray *titles = @[@"第一段",@"第二段",@"第三段"];
+    NSArray *viewControllers = @[fVC,sVC,tVC]; // 视图控制器数组
+    NSArray *titles = @[@"第一段",@"第二段",@"第三段"]; // 标题数组
     XWPageViewController *pageVC = [[XWPageViewController alloc] initWithViewControllers:viewControllers
                                                                                   titles:titles
                                                                      isShowPageIndicator:NO
                                                                          segmentShowType:XWPageVCSegmentShowTypeNavigationView
                                                                                  toIndex:0];
-    pageVC.title = @"张校玮";
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 64, XWScreenWidth, 44)];
-    view.backgroundColor = [UIColor yellowColor];
-    pageVC.segmentCenter = CGPointMake(view.bounds.size.width / 2.0, view.bounds.size.height / 2.0);
-    pageVC.segmentView = view;
-    pageVC.segmentTintColor = [UIColor redColor];
-    [pageVC setWidth:200 forSegmentAtIndex:0];
+    pageVC.title = @"张校玮"; // title标题
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 64, XWScreenWidth, 44)]; // segment的父视图
+    view.backgroundColor = [UIColor yellowColor]; // 背景
+    pageVC.segmentCenter = CGPointMake(view.bounds.size.width / 2.0, view.bounds.size.height / 2.0); // 中心点坐标
+    pageVC.segmentView = view; // 指定segment的父视图
+    pageVC.segmentTintColor = [UIColor redColor]; // 设置segment的tintColor
+    [pageVC setWidth:200 forSegmentAtIndex:0]; // 设置segment的宽度
     
     UINavigationController * navi = [[UINavigationController alloc] initWithRootViewController:pageVC];
     self.window.rootViewController = navi;
