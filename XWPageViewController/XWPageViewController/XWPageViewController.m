@@ -20,22 +20,48 @@
 @property (nonatomic, strong) UIView *priTitleView; // 原始的TitleView
 @property (nonatomic, assign) BOOL priTranslucent; // 原始的NavigationBar的透明度
 
+@property (nonatomic, assign) BOOL isShowPageIndicator; // 是否显示页面指示器，默认NO
+@property (nonatomic, strong) UIColor *segmentDefaultViewBackGroundColor; // 默认当前NavigationBar的barTintColor
+@property (nonatomic, assign) CGPoint segmentCenter; // XWPageVCSegmentShowTypeNavigationView时有效
+
+
 @end
 
 @implementation XWPageViewController
 
 // 复写方法
 #pragma mark - Overwrite Methods
+// 初始化方法，初始化变量的默认值
 - (instancetype)init{
     self = [super init];
     if (self) {
         _nextPage = -1;
         _segmentShowType = XWPageVCSegmentShowTypeTitleView;
         _isShowPageIndicator = NO;
-        _segmentCenter = CGPointMake(XWScreenWidth / 2.0, 22);
         _segmentDefaultIndex = 0;
     }
     return self;
+}
+
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers
+                                 titles:(NSArray *)titles
+                        segmentShowType:(XWPageVCSegmentShowType)showType{
+    return [self initWithViewControllers:viewControllers
+                                  titles:titles
+                     isShowPageIndicator:NO
+                         segmentShowType:showType
+                                 toIndex:0];
+}
+
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers
+                                 titles:(NSArray *)titles
+                        segmentShowType:(XWPageVCSegmentShowType)showType
+                                toIndex:(NSUInteger)toIndex{
+    return [self initWithViewControllers:viewControllers
+                                  titles:titles
+                     isShowPageIndicator:NO
+                         segmentShowType:showType
+                                 toIndex:0];
 }
 
 - (instancetype)initWithViewControllers:(NSArray *)viewControllers
@@ -55,9 +81,11 @@
     return self;
 }
 
+#pragma mark - OverWrite
+
 - (void)viewDidLoad{
     [super viewDidLoad];
-    self.view.backgroundColor = _viwewBackGroundColor ? _viwewBackGroundColor : [UIColor whiteColor];
+    self.view.backgroundColor = _viewBackGroundColor ? _viewBackGroundColor : [UIColor whiteColor];
     [self pageViewController];
 }
 
@@ -66,6 +94,18 @@
     self.priTitleView = self.navigationItem.titleView;
     self.priTranslucent = self.navigationController.navigationBar.translucent;
     [self configUISegmentedControlWishShow:YES];
+    
+    if (!self.segmentView) {
+        if (!_segmentDefaultViewBackGroundColor || _segmentDefaultViewBackGroundColor == [UIColor whiteColor]) {
+            UIColor *color = self.navigationController.navigationBar.barTintColor;
+            if (color) {
+                _segmentDefaultViewBackGroundColor = color;
+            }
+            _segmentDefaultView.backgroundColor = _segmentDefaultViewBackGroundColor;
+        }
+        _segmentView = self.segmentDefaultView;
+        self.segmentCenter = CGPointMake(CGRectGetWidth(_segmentView.bounds)/2.0, CGRectGetHeight(_segmentView.bounds)/2.0);
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -86,7 +126,6 @@
     _nextPage = [self.viewControllers indexOfObject:_nextViewController];
 }
 
-// Sent when a gesture-initiated transition ends. The 'finished' parameter indicates whether the animation finished, while the 'completed' parameter indicates whether the transition completed or bailed out (if the user let go early).
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed{
     if (completed) {
         _currentViewController = _nextViewController;
@@ -98,25 +137,8 @@
     }
 }
 
-// Delegate may specify a different spine location for after the interface orientation change. Only sent for transition style 'UIPageViewControllerTransitionStylePageCurl'.
-// Delegate may set new view controllers or update double-sided state within this method's implementation as well.
-//- (UIPageViewControllerSpineLocation)pageViewController:(UIPageViewController *)pageViewController spineLocationForInterfaceOrientation:(UIInterfaceOrientation)orientation{
-//    
-//}
-//
-//- (NSUInteger)pageViewControllerSupportedInterfaceOrientations:(UIPageViewController *)pageViewController NS_AVAILABLE_IOS(7_0){
-//    
-//}
-//- (UIInterfaceOrientation)pageViewControllerPreferredInterfaceOrientationForPresentation:(UIPageViewController *)pageViewController NS_AVAILABLE_IOS(7_0){
-//    
-//}
-
 #pragma mark  UIPageViewControllerDataSource
 /**** @required ****/
-
-// In terms of navigation direction. For example, for 'UIPageViewControllerNavigationOrientationHorizontal', view controllers coming 'before' would be to the left of the argument view controller, those coming 'after' would be to the right.
-// Return 'nil' to indicate that no more progress can be made in the given direction.
-// For gesture-initiated transitions, the page view controller obtains view controllers via these methods, so use of setViewControllers:direction:animated:completion: is not required.
 
 // 上一个视图控制器
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
@@ -212,20 +234,6 @@
 // 适配UI
 #pragma mark MakeConstraints
 
-/* 数据 */
-#pragma mark - ----- Data -----
-#pragma mark -
-
-//数据请求
-#pragma mark Request Data
-
-// 处理数据
-#pragma mark Handle Data
-
-/* 事件 */
-#pragma mark - ----- Events -----
-#pragma mark -
-
 //按钮事件
 #pragma mark Event Response
 #pragma mark -
@@ -247,10 +255,6 @@
         _currentIndex = selectedIndex;
     }
 }
-
-// Push Present
-#pragma mark - Push Present
-#pragma mark -
 
 // Get方法
 #pragma mark - Getter
@@ -290,18 +294,40 @@
         
         CGFloat moveY = 0.0;
         if (self.segmentShowType == XWPageVCSegmentShowTypeNavigationView) {
-            if (self.segmentView != nil) {
-                moveY = CGRectGetHeight(self.segmentView.frame);
-            }else{
-                moveY = CGRectGetHeight(self.segmentDefaultView.frame);
-            }
+            moveY = CGRectGetHeight(self.segmentView.frame);
         }
         
         CGRect frame = _pageViewController.view.frame;
         _pageViewController.view.frame = CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame) + moveY, CGRectGetWidth(frame), CGRectGetHeight(frame) - moveY);
         
+        CGFloat screenHeight = CGRectGetHeight([UIScreen mainScreen].bounds);
+        CGFloat xwPageViewHeight = CGRectGetHeight(self.view.bounds);
+        CGFloat navigationViewHeight = CGRectGetHeight(self.navigationController.view.frame);
+        CGFloat pageViewHeight = CGRectGetHeight(_pageViewController.view.frame);
+        CGFloat segmentViewMinY = CGRectGetMinY(self.segmentView ? self.segmentView.frame : self.segmentDefaultView.frame);
+        CGFloat segmentViewMaxY = CGRectGetMaxY(self.segmentView ? self.segmentView.frame : self.segmentDefaultView.frame);
+        CGFloat segmentViewHeight = CGRectGetHeight(self.segmentView ? self.segmentView.frame : self.segmentDefaultView.frame);
+        NSLog(@"screenHeight:%.1f, xwPageViewHeight:%.1f, navigationViewHeight:%.1f, pageViewHeight:%.1f, segmentViewY:%.1f, segmentViewHeight:%.1f", screenHeight, xwPageViewHeight, navigationViewHeight, pageViewHeight, segmentViewMinY, segmentViewHeight);
+        
+        if (screenHeight != navigationViewHeight) {
+            NSLog(@"屏幕高度不等于导航栏View的高度，不应该出现这种情况,也基本不可能出现这种情况");
+        }
+        
+        if (xwPageViewHeight != pageViewHeight) {
+            NSLog(@"XWPageViewController.view的高度不等于XWPageViewController.pageViewController.view的高度，不应该出现，也不可能出现");
+        }
+        
+        CGRect visibleFrame = CGRectMake(0, 0, XWScreenWidth, pageViewHeight);
+        if (pageViewHeight == navigationViewHeight) {
+            visibleFrame = CGRectMake(0, segmentViewMaxY, XWScreenWidth, pageViewHeight - segmentViewMaxY);
+        }else{
+            CGFloat beyondScreenHeight = pageViewHeight + segmentViewMaxY - navigationViewHeight;
+            visibleFrame = CGRectMake(0, beyondScreenHeight, XWScreenWidth, pageViewHeight - beyondScreenHeight);
+        }
+        
         for (UIViewController <XWPageViewControllerDelegate>*controller in self.viewControllers) {
-            [controller xwPageViewController:self showFrame:_pageViewController.view.bounds];
+            
+            [controller xwPageViewController:self visibleFrame:visibleFrame];
         }
     }
     return _pageViewController;
@@ -310,12 +336,16 @@
 - (UIView *)segmentDefaultView{
     if (!_segmentDefaultView) {
         CGFloat y = 0;
-        if (self.navigationController && self.navigationController.navigationBar.translucent == NO) {
+        if (self.navigationController && self.navigationController.navigationBar.translucent == YES) {
             y = 64.0;
+        }else{
+            y = 0.0;
         }
         _segmentDefaultView = [[UIView alloc] initWithFrame:CGRectMake(0, y, XWScreenWidth, 44.0)];
-        UIColor *color = _segmentDefaultViewBackGroundColor ? _segmentDefaultViewBackGroundColor : [UIColor whiteColor];
-        _segmentDefaultView.backgroundColor = color;
+        if (!_segmentDefaultViewBackGroundColor) {
+            _segmentDefaultViewBackGroundColor = [UIColor whiteColor];
+        }
+        _segmentDefaultView.backgroundColor = _segmentDefaultViewBackGroundColor;
     }
     return _segmentDefaultView;
 }
@@ -328,6 +358,11 @@
 
 - (void)setSegmentTintColor:(UIColor *)segmentTintColor{
     self.segment.tintColor = segmentTintColor;
+}
+
+- (void)setSegmentView:(UIView *)segmentView{
+    _segmentView = segmentView;
+    self.segmentCenter = CGPointMake(CGRectGetWidth(_segmentView.bounds)/2.0, CGRectGetHeight(_segmentView.bounds)/2.0);
 }
 
 @end
