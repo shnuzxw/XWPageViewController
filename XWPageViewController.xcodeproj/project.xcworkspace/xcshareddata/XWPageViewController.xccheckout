@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>1BDEE9EC-126A-4B82-BC9A-BE3741D68C8C</string>
 	<key>IDESourceControlProjectName</key>
-	<string>XWPageViewController</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>22CB8B77CA28C5C52F6C2D013CC863F59FD2356A</key>
 		<string>https://github.com/shnuzxw/XWPageViewController.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>XWPageViewController.xcodeproj</string>
+	<string>XWPageViewController.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>22CB8B77CA28C5C52F6C2D013CC863F59FD2356A</key>

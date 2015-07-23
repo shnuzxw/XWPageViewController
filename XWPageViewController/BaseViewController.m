@@ -16,10 +16,21 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self tableView];
+   
 }
 
-- (void)xwPageViewController:(XWPageViewController *)xwPageViewController showFrame:(CGRect)frame{
-    self.tableView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+     self.navigationController.navigationBar.barTintColor = [UIColor blueColor];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.navigationController.navigationBar.barTintColor = [UIColor cyanColor];
+}
+
+- (void)xwPageViewController:(XWPageViewController *)xwPageViewController visibleFrame:(CGRect)visibleFrame{
+    self.tableView.frame = visibleFrame;
 }
 
 #pragma mark - UITableView Datasource
