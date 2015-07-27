@@ -6,6 +6,19 @@
 //  Copyright (c) 2015年 Zhang Xiaowei. All rights reserved.
 //
 
+/**
+ *  Version: 0.0.1
+ *  Description: 解决多视图控制器之间在同一个父视图控制器中切换的问题。
+ */
+
+/**
+ * 特点：
+        1. 提供两种切换方式。可左右前后，点击按钮切换。
+        2. 提供两种显示方式。可在导航栏的TitleView上显示页面标题，也可在Navigation.view上显示。
+        3. 每个模块是一个视图控制器，而非视图。方便管理各个视图，亦可大大降低耦合性。但是，视图控制器需要遵守XWPageViewControllerDelegate协议。
+        4. 可自定义UI。
+ */
+
 #import <UIKit/UIKit.h>
 #define XWScreenWidth [[UIScreen mainScreen] bounds].size.width
 
