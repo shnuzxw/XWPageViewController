@@ -6,28 +6,31 @@
 //  Copyright (c) 2015年 Zhang Xiaowei. All rights reserved.
 //
 
-/**
+/**==========================================================
  *  Version: 0.0.1
  *  Description: 解决多视图控制器之间在同一个父视图控制器中切换的问题。
- */
+ *==========================================================*/
 
-/**
+/**----------------------------------------------------------
  * 特点：
         1. 提供两种切换方式。可左右前后，点击按钮切换。
         2. 提供两种显示方式。可在导航栏的TitleView上显示页面标题，也可在Navigation.view上显示。
         3. 每个模块是一个视图控制器，而非视图。方便管理各个视图，亦可大大降低耦合性。但是，视图控制器需要遵守XWPageViewControllerDelegate协议。
         4. 可自定义UI。
- */
+ *----------------------------------------------------------*/
 
 #import <UIKit/UIKit.h>
 #define XWScreenWidth [[UIScreen mainScreen] bounds].size.width
 
-typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedControl的模式
+// 显示UISegmentedControl的模式
+typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) {
     XWPageVCSegmentShowTypeTitleView,      // TitleView上，默认值
     XWPageVCSegmentShowTypeNavigationView  // Navigation.view上
 };
 
 @class XWPageViewController;
+
+#pragma mark - XWPageViewControllerDelegate
 @protocol XWPageViewControllerDelegate <NSObject>
 @required
 /**
@@ -39,21 +42,22 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) { // 显示UISegmentedContr
 - (void)xwPageViewController:(XWPageViewController *)xwPageViewController visibleFrame:(CGRect)visibleFrame;
 
 @end
+
+
+#pragma mark - XWPageViewController
 @interface XWPageViewController : UIViewController
 
 #pragma mark - Property
 
-@property (nonatomic, assign, readonly) NSInteger currentIndex; // 当前页面的索引
-@property (nonatomic, strong, readonly) UIViewController *currentViewController; // 当前显示的视图控制器
+@property (nonatomic, assign, readonly) NSInteger        currentIndex;// 当前页面的索引
+@property (nonatomic, strong, readonly) UIViewController *currentViewController;// 当前显示的视图控制器
 
-@property (nonatomic, strong) UIColor *viewBackGroundColor; // XWPageViewController的View背景颜色，默认白色
-
-@property (nonatomic, assign) XWPageVCSegmentShowType segmentShowType; // UISegmentedControl显示类型与样式
-@property (nonatomic, strong) UIColor *segmentTintColor;  // UISegmentedControl主题色
+@property (nonatomic, assign) XWPageVCSegmentShowType segmentShowType;// UISegmentedControl显示类型与样式
+@property (nonatomic, strong) UIColor                 *segmentTintColor;// UISegmentedControl主题色
 /**
  UISegmentedControl的载体与样式
  1. segmentShowType为XWPageVCSegmentShowTypeNavigationView时有效。
- 2. 可为空。默认CGRectMake(0,y,ScreenWidth,44)的View。 y根据navigationBar.translucent而定;YES:y=64;NO:y=0。
+ 2. 可为空。默认CGRectMake(0,y,ScreenWidth,44)的View。 y根据navigationBar.translucent而定;YES:y = 64;NO:y=0。
  */
 @property (nonatomic, strong) UIView *segmentView;
 

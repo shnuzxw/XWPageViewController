@@ -7,23 +7,23 @@
 //
 #import "XWPageViewController.h"
 @interface XWPageViewController()<UIPageViewControllerDataSource, UIPageViewControllerDelegate>
-@property (nonatomic, strong) UISegmentedControl *segment; // 分段控制器
-@property (nonatomic, strong) NSArray *titles;  // UISegment的Title数组
-@property (nonatomic, strong) NSArray *viewControllers; // 视图控制器数组
+
+@property (nonatomic, strong) UISegmentedControl   *segment;// 分段控制器
+@property (nonatomic, strong) NSArray              *titles;// UISegment的Title数组
+@property (nonatomic, strong) NSArray              *viewControllers;// 视图控制器数组
 
 @property (nonatomic, strong) UIPageViewController *pageViewController;
-@property (nonatomic, strong) UIViewController *nextViewController; // 应显示的下一个试图控制
-@property (nonatomic, assign) NSInteger nextPage; // 应该显示的下一页索引
-@property (nonatomic, strong) UIView *segmentDefaultView; // UISegmentedControl的默认载体
-@property (nonatomic, assign) NSInteger segmentDefaultIndex; // 默认索引，即默认显示第几个页面，当前页面及其索引都会随之改变
+@property (nonatomic, strong) UIViewController     *nextViewController;// 应显示的下一个试图控制
+@property (nonatomic, assign) NSInteger            nextPage;// 应该显示的下一页索引
+@property (nonatomic, strong) UIView               *segmentDefaultView;// UISegmentedControl的默认载体
+@property (nonatomic, assign) NSInteger            segmentDefaultIndex;// 默认索引，即默认显示第几个页面，当前页面及其索引都会随之改变
 
-@property (nonatomic, strong) UIView *priTitleView; // 原始的TitleView
-@property (nonatomic, assign) BOOL priTranslucent; // 原始的NavigationBar的透明度
+@property (nonatomic, strong) UIView               *priTitleView;// 原始的TitleView
+@property (nonatomic, assign) BOOL                 priTranslucent;// 原始的NavigationBar的透明度
 
-@property (nonatomic, assign) BOOL isShowPageIndicator; // 是否显示页面指示器，默认NO
-@property (nonatomic, strong) UIColor *segmentDefaultViewBackGroundColor; // 默认当前NavigationBar的barTintColor
-@property (nonatomic, assign) CGPoint segmentCenter; // XWPageVCSegmentShowTypeNavigationView时有效
-
+@property (nonatomic, assign) BOOL                 isShowPageIndicator;// 是否显示页面指示器，默认NO
+@property (nonatomic, strong) UIColor              *segmentDefaultViewBackGroundColor;// 默认当前NavigationBar的barTintColor
+@property (nonatomic, assign) CGPoint              segmentCenter;// XWPageVCSegmentShowTypeNavigationView时有效
 
 @end
 
@@ -85,7 +85,7 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    self.view.backgroundColor = _viewBackGroundColor ? _viewBackGroundColor : [UIColor whiteColor];
+    
     [self pageViewController];
 }
 
@@ -93,24 +93,26 @@
     [super viewWillAppear:animated];
     self.priTitleView = self.navigationItem.titleView;
     self.priTranslucent = self.navigationController.navigationBar.translucent;
-    [self configUISegmentedControlWishShow:YES];
+    
     
     if (!self.segmentView) {
         if (!_segmentDefaultViewBackGroundColor || _segmentDefaultViewBackGroundColor == [UIColor whiteColor]) {
             UIColor *color = self.navigationController.navigationBar.barTintColor;
             if (color) {
-                _segmentDefaultViewBackGroundColor = color;
+                self.segmentDefaultViewBackGroundColor = color;
             }
-            _segmentDefaultView.backgroundColor = _segmentDefaultViewBackGroundColor;
+            self.segmentDefaultView.backgroundColor = self.segmentDefaultViewBackGroundColor;
         }
-        _segmentView = self.segmentDefaultView;
-        self.segmentCenter = CGPointMake(CGRectGetWidth(_segmentView.bounds)/2.0, CGRectGetHeight(_segmentView.bounds)/2.0);
+        self.segmentView = self.segmentDefaultView;
+        self.segmentCenter = CGPointMake(CGRectGetWidth(self.segmentView.bounds)/2.0, CGRectGetHeight(self.segmentView.bounds)/2.0);
     }
+    
+    [self configUISegmentedControlWithIsShow:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self configUISegmentedControlWishShow:NO];
+    [self configUISegmentedControlWithIsShow:NO];
     self.navigationItem.titleView = self.priTitleView;
     self.navigationController.navigationBar.translucent = self.priTranslucent;
 }
@@ -184,11 +186,7 @@
 
 //UI配置
 #pragma mark ConfigureUI
-- (void)configNavigationControllerView{
-    [self.navigationController.view addSubview:self.segment];
-}
-
-- (void)configUISegmentedControlWishShow:(BOOL)isShow{
+- (void)configUISegmentedControlWithIsShow:(BOOL)isShow{
     switch (_segmentShowType) {
         case XWPageVCSegmentShowTypeTitleView:
         {
@@ -352,17 +350,15 @@
 
 // Set方法
 #pragma mark - Setter
-- (void)setSegmentCenter:(CGPoint)segmentCenter{
-    self.segment.center = segmentCenter;
-}
-
-- (void)setSegmentTintColor:(UIColor *)segmentTintColor{
-    self.segment.tintColor = segmentTintColor;
-}
+//- (void)setSegmentTintColor:(UIColor *)segmentTintColor{
+//    self.segmentTintColor = segmentTintColor;
+//    self.segment.tintColor = self.segmentTintColor;
+//}
 
 - (void)setSegmentView:(UIView *)segmentView{
     _segmentView = segmentView;
-    self.segmentCenter = CGPointMake(CGRectGetWidth(_segmentView.bounds)/2.0, CGRectGetHeight(_segmentView.bounds)/2.0);
+    CGRect frame = self.segmentView.bounds;
+    self.segmentCenter = CGPointMake(CGRectGetWidth(frame)/2.0, CGRectGetHeight(frame)/2.0);
 }
 
 @end
