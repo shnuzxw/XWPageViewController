@@ -14,7 +14,9 @@ XWPageViewController *pageVC = [[XWPageViewController alloc] initWithViewControl
 ```
 
 #示例
+##示例1
 ![示例1](https://github.com/shnuzxw/XWPageViewController/blob/master/XWPageViewController1.gif)
+##示例2
 ![示例2](https://github.com/shnuzxw/XWPageViewController/blob/master/XWPageViewController2.gif)
 
 
