@@ -39,6 +39,11 @@ typedef NS_ENUM(NSUInteger, XWPageVCSegmentShowType) {
  *  @param xwPageViewController 管理ViewController的XWPageViewController的实例
  *  @param frame                相对于ViewController.view的可见Frame
  */
+
+/*-------------------   注意  --------------------
+ *  若您传入的视图控制器需要进行push操作，必须使用xwPageViewController进行push操作，否则将出现错误。
+ *  建议使用全局变量接收xwPageViewController参数。其本质是一个UIViewController的子类。
+ *-------------------   注意  --------------------*/
 - (void)xwPageViewController:(XWPageViewController *)xwPageViewController visibleFrame:(CGRect)visibleFrame;
 
 @end
